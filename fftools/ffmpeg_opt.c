@@ -87,6 +87,12 @@ float audio_drift_threshold = 0.1;
 float dts_delta_threshold   = 10;
 float dts_error_threshold   = 3600*30;
 
+//jjustman-2019-01-187 - ENABLE THIS BY DEFAULT FOR HLS PTS RECLOCK
+ 
+int dts_monotonicity_threshold = AV_TIME_BASE;
+int force_dts_monotonicity = 1;
+//end - jjustman-2019-01-187 - ENABLE THIS BY DEFAULT FOR HLS PTS RECLOCK
+
 int audio_volume      = 256;
 int audio_sync_method = 0;
 int video_sync_method = VSYNC_AUTO;
@@ -3473,7 +3479,15 @@ const OptionDef options[] = {
     { "apad",           OPT_STRING | HAS_ARG | OPT_SPEC |
                         OPT_OUTPUT,                                  { .off = OFFSET(apad) },
         "audio pad", "" },
-    { "dts_delta_threshold", HAS_ARG | OPT_FLOAT | OPT_EXPERT,       { &dts_delta_threshold },
+
+	//justman-2019-01-17 - patch for pts discontinuity
+	{ "force_dts_monotonicity", OPT_BOOL | OPT_EXPERT,               { &force_dts_monotonicity },
+	    "correct dts monotonicity errors" },
+	{ "dts_monotonicity_threshold",    HAS_ARG | OPT_INT | OPT_EXPERT,{ &dts_monotonicity_threshold },
+		"dts correction threshold for forward jumps", "microseconds" },
+
+
+	{ "dts_delta_threshold", HAS_ARG | OPT_FLOAT | OPT_EXPERT,       { &dts_delta_threshold },
         "timestamp discontinuity delta threshold", "threshold" },
     { "dts_error_threshold", HAS_ARG | OPT_FLOAT | OPT_EXPERT,       { &dts_error_threshold },
         "timestamp error delta threshold", "threshold" },
